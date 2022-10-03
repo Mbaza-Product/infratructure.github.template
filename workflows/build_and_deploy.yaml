@@ -1,0 +1,72 @@
+name: Build and deploy app
+on:
+  workflow_call:
+    inputs:
+      PROJECT_ROOT_PATH:
+        required: true
+        type: string 
+      ENVIRONMENT:
+        required: true
+        type: string
+      SERVICE_LOCATION_PATH:
+        required: true
+        type: string
+      NETWORK_NAME:
+        required: true
+        type: string
+
+
+env:
+  KEEP_RELEASES: "4"
+
+jobs:
+  copy_to_folder:
+    runs-on:
+      - ${{ inputs.ENVIRONMENT }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: create docker network name
+        run: |-
+          if [ -z $(docker network ls --filter name=^${NETWORK_NAME}$ --format="{{ .Name }}") ] ; then 
+          docker network create ${NETWORK_NAME} ; 
+          fi
+          mkdir -p ${{ inputs.PROJECT_ROOT_PATH}}
+          rsync -rltgoEDvz -e "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" * ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}
+
+  build_image:
+    runs-on:
+      - ${{ inputs.ENVIRONMENT }}
+    needs: copy_to_folder 
+    steps:
+      - name: build docker images
+        run: |-
+          echo $PWD
+          echo $HOSTNAME
+          cd ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}/${{inputs.SERVICE_LOCATION_PATH}}
+          echo "Building..."
+          docker-compose build
+
+  deploy_to_current:
+    name: Deploy to folder
+    runs-on: ${{inputs.ENVIRONMENT}}
+    needs: build_image 
+    steps:
+    - name: deploy to current folder
+      run: |-
+        cd ${{inputs.PROJECT_ROOT_PATH}}
+        mkdir -p current
+        rsync -rltgoEDvz --del --delete ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}/ ${{inputs.PROJECT_ROOT_PATH}}/current/
+
+  clean_up:
+    name: Cleanup old files
+    runs-on: ${{inputs.ENVIRONMENT}}
+    needs: deploy_to_current 
+    steps:
+    - name: remove old folders
+      run: |-
+        cd ${{inputs.PROJECT_ROOT_PATH}}
+        echo "$CI_PIPELINE_ID"
+        ls -tr -I ${GITHUB_SHA::7} | head -n -$KEEP_RELEASES | xargs rm -rf
+
+  
+          

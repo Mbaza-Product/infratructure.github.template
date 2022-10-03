@@ -1,0 +1,64 @@
+name: Maintain 
+
+on:
+  workflow_call:
+    inputs:
+      PROJECT_ROOT_PATH:
+        required: true
+        type: string 
+      ENVIRONMENT:
+        required: true
+        type: string
+      SERVICE:
+        required: true
+        type: string
+      PARAMETER:
+        required: true
+        type: string
+      PROJECT_BACKUP_PATH:
+        required: true
+        type: string
+      SERVICE_LOCATION_PATH:
+        required: true
+        type: string
+      BACKUP_SCRIPT_FILE_LOCATION:
+        type: string
+      RESTORE_SCRIPT_FILE_LOCATION:
+        type: string
+
+jobs:
+  restart_container: 
+    if: inputs.PARAMETER == 'RESTART'
+    name: restart container
+    runs-on: 
+      - ${{ inputs.ENVIRONMENT }}
+    steps:
+    - name: run up the container
+      run: |-
+        cd ${{ inputs.PROJECT_ROOT_PATH }}/current/${{inputs.SERVICE_LOCATION_PATH}}
+        docker-compose restart
+
+  backup: 
+    if: inputs.PARAMETER == 'BACKUP'
+    name: backup the service
+    runs-on: 
+      - ${{ inputs.ENVIRONMENT }}
+    steps:
+    - name: backup the service
+      run: |-
+        cd ${{ inputs.PROJECT_ROOT_PATH }}/current/
+        ls
+        bash shellscripts/backup-multiple-volumes.sh ${{ inputs.PROJECT_ROOT_PATH }}/current/${{inputs.SERVICE_LOCATION_PATH}} ${{inputs.SERVICE}} ${{inputs.PROJECT_BACKUP_PATH}}/
+
+  restore: 
+    if: inputs.PARAMETER == 'RESTORE'
+    name: restore the service
+    runs-on: 
+      - ${{ inputs.ENVIRONMENT }}
+    steps:
+    - name: restore the service
+      run: |-
+        cd ${{inputs.PROJECT_BACKUP_PATH}}/${{inputs.SERVICE}}
+        LATEST_BACKUP=$(printf '%s\n' backup* | sort -rn | head -n1) 
+        cd ${{ inputs.PROJECT_ROOT_PATH }}/current/
+        bash shellscripts/restore-volume.sh ${{ inputs.PROJECT_ROOT_PATH }}/current/${{inputs.SERVICE_LOCATION_PATH}} ${{inputs.SERVICE}}/$LATEST_BACKUP ${{inputs.PROJECT_BACKUP_PATH}} ${{inputs.SERVICE}}
