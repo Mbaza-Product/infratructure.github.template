@@ -27,8 +27,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: create docker network name
         run: |-
-          if [ -z $(docker network ls --filter name=^${NETWORK_NAME}$ --format="{{ .Name }}") ] ; then 
-          docker network create ${NETWORK_NAME} ; 
+          if [ -z $(docker network ls --filter name=^${inputs.NETWORK_NAME}$ --format="{{ .Name }}") ] ; then 
+          docker network create ${{inputs.NETWORK_NAME}} ; 
           fi
           mkdir -p ${{ inputs.PROJECT_ROOT_PATH}}
           rsync -rltgoEDvz -e "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" * ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}
