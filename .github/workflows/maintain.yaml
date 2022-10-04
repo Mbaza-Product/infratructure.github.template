@@ -22,8 +22,10 @@ on:
         required: true
         type: string
       BACKUP_SCRIPT_FILE_LOCATION:
+        required: true
         type: string
       RESTORE_SCRIPT_FILE_LOCATION:
+        required: true
         type: string
 
 jobs:
