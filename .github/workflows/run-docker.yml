@@ -1,4 +1,4 @@
-name: Run container
+name: Run {{ inputs.PARAMETER }}container
 
 on:
   workflow_call:
