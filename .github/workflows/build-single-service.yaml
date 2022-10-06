@@ -1,0 +1,23 @@
+Name: build single application
+on:
+  workflow_call:
+    inputs:
+      SERVICE: 
+        required: true
+        type: string
+      ENVIRONMENT:
+        required: true
+        type: string
+
+jobs:
+  build_service:
+    runs-on:
+      - ${{ inputs.ENVIRONMENT }}
+    steps:
+      - name: build ${{inputs.SERVICE}}
+        run: |
+          echo $PWD
+          echo $HOSTNAME
+          cd ${{inputs.SERVICE}}
+          echo "Building..."
+          docker-compose build

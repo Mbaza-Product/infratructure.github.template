@@ -37,12 +37,15 @@ jobs:
     runs-on:
       - ${{ inputs.ENVIRONMENT }}
     needs: copy_to_folder 
+    strategy:
+      matrix:
+        service: ${{SERVICE_LOCATION_PATH}}
     steps:
       - name: build docker images
         run: |-
           echo $PWD
           echo $HOSTNAME
-          cd ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}/${{inputs.SERVICE_LOCATION_PATH}}
+          cd ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}/${{matrix.service}}
           echo "Building..."
           docker-compose build
 
