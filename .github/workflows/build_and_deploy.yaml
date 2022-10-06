@@ -37,16 +37,11 @@ jobs:
     runs-on:
       - ${{ inputs.ENVIRONMENT }}
     needs: copy_to_folder 
-    uses: ./.gitihub/worflows/build-single-service.yaml
-    with: 
+    steps:
+      - uses: ./.gitihub/worflows/build-single-service
+        with: 
           SERVICE: ${{inputs.SERVICE_LOCATION_PATH}}
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-      # - name: build docker images
-    # steps:
-    #   - uses: ./.gitihub/worflows/build-single-service
-    #     with: 
-    #       SERVICE: ${{inputs.SERVICE_LOCATION_PATH}}
-    #       ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
       # - name: build docker images
       #   run: |-
       #     echo $PWD
