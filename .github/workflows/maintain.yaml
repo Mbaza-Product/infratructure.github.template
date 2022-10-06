@@ -50,7 +50,7 @@ jobs:
       run: |-
         cd ${{ inputs.PROJECT_ROOT_PATH }}/current/
         ls
-        bash ${{ inputs.BACKUP_SCRIPT_FILE }} ${{ inputs.PROJECT_ROOT_PATH }}/current/${{inputs.SERVICE_LOCATION_PATH}} ${{inputs.SERVICE}} ${{inputs.PROJECT_BACKUP_PATH}}/
+        bash ${{ inputs.BACKUP_SCRIPT_FILE }} ${{ inputs.PROJECT_ROOT_PATH }}/current/${{inputs.SERVICE_LOCATION_PATH}} ${{inputs.SERVICE}} ${{inputs.PROJECT_BACKUP_PATH}}/ ${{ inputs.PROJECT_ROOT_PATH }}/current/
 
   restore: 
     if: inputs.PARAMETER == 'RESTORE'

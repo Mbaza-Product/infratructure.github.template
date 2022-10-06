@@ -12,3 +12,4 @@ jobs:
       SERVICE_LOCATION_PATH: service
       NETWORK_NAME: external_docker_network_name
 ```
+# Run container
