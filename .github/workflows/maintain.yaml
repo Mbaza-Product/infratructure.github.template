@@ -63,4 +63,4 @@ jobs:
         cd ${{inputs.PROJECT_BACKUP_PATH}}/${{inputs.SERVICE}}
         LATEST_BACKUP=$(printf '%s\n' backup* | sort -rn | head -n1) 
         cd ${{ inputs.PROJECT_ROOT_PATH }}/current/
-        bash ${{ inputs.RESTORE_SCRIPT_FILE }} ${{ inputs.PROJECT_ROOT_PATH }}/current/${{inputs.SERVICE_LOCATION_PATH}} ${{inputs.SERVICE}}/$LATEST_BACKUP ${{inputs.PROJECT_BACKUP_PATH}} ${{inputs.SERVICE}}
+        bash ${{ inputs.RESTORE_SCRIPT_FILE }} ${{ inputs.PROJECT_ROOT_PATH }}/current/${{inputs.SERVICE_LOCATION_PATH}} ${{inputs.SERVICE}}/$LATEST_BACKUP ${{inputs.PROJECT_BACKUP_PATH}} ${{inputs.SERVICE}} ${{ inputs.PROJECT_ROOT_PATH }}/current/
