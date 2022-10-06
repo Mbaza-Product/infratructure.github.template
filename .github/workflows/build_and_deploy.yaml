@@ -38,7 +38,7 @@ jobs:
       - ${{ inputs.ENVIRONMENT }}
     needs: copy_to_folder 
     steps:
-      - uses: build-single-service
+      - uses: ./.gitihub/worflows/build-single-service
         with: 
           SERVICE: ${{SERVICE_LOCATION_PATH}}
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
