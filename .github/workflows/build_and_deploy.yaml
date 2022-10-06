@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: ./.gitihub/worflows/build-single-service
         with: 
-          SERVICE: ${{SERVICE_LOCATION_PATH}}
+          SERVICE: ${{inputs.SERVICE_LOCATION_PATH}}
           ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
       # - name: build docker images
       #   run: |-
