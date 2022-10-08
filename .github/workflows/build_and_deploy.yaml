@@ -26,12 +26,6 @@ jobs:
         cd ${{inputs.PROJECT_ROOT_PATH}}
         mkdir -p current
         rsync -rltgoEDvz --del --delete ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}/ ${{inputs.PROJECT_ROOT_PATH}}/current/
-
-  clean_up:
-    name: Cleanup old files
-    runs-on: ${{inputs.ENVIRONMENT}}
-    needs: deploy_to_current 
-    steps:
     - name: remove old folders
       run: |-
         cd ${{inputs.PROJECT_ROOT_PATH}}
