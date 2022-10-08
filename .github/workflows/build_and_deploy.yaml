@@ -20,7 +20,6 @@ jobs:
   deploy_to_current:
     name: Deploy to folder
     runs-on: ${{inputs.ENVIRONMENT}}
-    needs: build_image 
     steps:
     - name: deploy to current folder
       run: |-
@@ -28,11 +27,11 @@ jobs:
         mkdir -p current
         rsync -rltgoEDvz --del --delete ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}/ ${{inputs.PROJECT_ROOT_PATH}}/current/
 
-  # clean_up:
-  #   name: Cleanup old files
-  #   runs-on: ${{inputs.ENVIRONMENT}}
-  #   needs: deploy_to_current 
-  #   steps:
+  clean_up:
+    name: Cleanup old files
+    runs-on: ${{inputs.ENVIRONMENT}}
+    needs: deploy_to_current 
+    steps:
     - name: remove old folders
       run: |-
         cd ${{inputs.PROJECT_ROOT_PATH}}
