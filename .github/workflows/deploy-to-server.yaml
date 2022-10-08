@@ -1,0 +1,29 @@
+Name: build single application
+on:
+  workflow_call:
+    inputs:
+      PROJECT_ROOT_PATH: 
+        required: true
+        type: string
+      ENVIRONMENT:
+        required: true
+        type: string
+      NETWORK_NAME:
+        required: true
+        type: string
+
+jobs:
+  copy_to_folder:
+    runs-on:
+      - ${{ inputs.ENVIRONMENT }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: create docker network name
+        run: |-
+          if [ -z $(docker network ls --filter name=^${{inputs.NETWORK_NAME}}$ --format="{{ .Name }}") ] ; then 
+          docker network create ${{inputs.NETWORK_NAME}} ; 
+          fi
+      - name: upload to server
+        run: |-
+          mkdir -p ${{ inputs.PROJECT_ROOT_PATH}}
+          rsync -rltgoEDvz -e "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" * ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}

@@ -1,4 +1,4 @@
-name: Build and deploy app
+name: deploy to final destination
 on:
   workflow_call:
     inputs:
@@ -11,45 +11,12 @@ on:
       SERVICE_LOCATION_PATH:
         required: true
         type: string
-      NETWORK_NAME:
-        required: true
-        type: string
-
 
 env:
   KEEP_RELEASES: "4"
 
 jobs:
-  copy_to_folder:
-    runs-on:
-      - ${{ inputs.ENVIRONMENT }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: create docker network name
-        run: |-
-          if [ -z $(docker network ls --filter name=^${{inputs.NETWORK_NAME}}$ --format="{{ .Name }}") ] ; then 
-          docker network create ${{inputs.NETWORK_NAME}} ; 
-          fi
-          mkdir -p ${{ inputs.PROJECT_ROOT_PATH}}
-          rsync -rltgoEDvz -e "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" * ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}
-
-  build_image:
-    runs-on:
-      - ${{ inputs.ENVIRONMENT }}
-    needs: copy_to_folder 
-    steps:
-      - uses: ./.github/worflows/build-single-service.yaml
-        with: 
-          SERVICE: ${{inputs.SERVICE_LOCATION_PATH}}
-          ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
-      # - name: build docker images
-      #   run: |-
-      #     echo $PWD
-      #     echo $HOSTNAME
-      #     cd ${{inputs.PROJECT_ROOT_PATH}}/${GITHUB_SHA::7}/${{matrix.service}}
-      #     echo "Building..."
-      #     docker-compose build
-
+  
   deploy_to_current:
     name: Deploy to folder
     runs-on: ${{inputs.ENVIRONMENT}}
