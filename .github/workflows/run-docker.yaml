@@ -15,6 +15,9 @@ on:
       SERVICE_LOCATION_PATH:
         required: true
         type: string
+      TARGET_FOLDER:
+        required: true
+        type: string
       
 
 
@@ -26,5 +29,5 @@ jobs:
     steps:
     - name: run up the container
       run: |-
-        cd ${{ inputs.PROJECT_ROOT_PATH }}/current/${{inputs.SERVICE_LOCATION_PATH}}
+        cd ${{ inputs.PROJECT_ROOT_PATH }}/${{ inputs.TARGET_FOLDER }}/${{inputs.SERVICE_LOCATION_PATH}}
         docker-compose ${{ inputs.PARAMETER }}
