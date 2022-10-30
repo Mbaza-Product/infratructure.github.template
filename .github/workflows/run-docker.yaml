@@ -30,4 +30,4 @@ jobs:
     - name: run up the container
       run: |-
         cd ${{ inputs.PROJECT_ROOT_PATH }}/${{ inputs.TARGET_FOLDER }}/${{inputs.SERVICE_LOCATION_PATH}}
-        docker-compose ${{ inputs.PARAMETER }}
+        docker compose ${{ inputs.PARAMETER }}
